@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PinkScan - Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ff9cc8, #ff69b4, #ff007a);
+            background-size: 300% 300%;
+            animation: gradientBG 12s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            background: transparent;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: background 0.4s ease, padding 0.4s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            padding: 10px 0;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #ff007a !important;
+            transform: scale(1.08);
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 0 40px;
+        }
+
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1500px;
+            height: calc(100vh - 80px);
+            align-items: stretch;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-wrapper {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            transition: background 0.3s ease;
+        }
+
+        .card-wrapper:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .selection-card, .login-card {
+            max-width: 580px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 0 25px rgba(255, 20, 147, 0.3);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .selection-card:hover, .login-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 0 35px rgba(255, 20, 147, 0.4);
+        }
+
+        .selection-card h3, .login-card h3 {
+            color: #ff007a;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            margin-bottom: 25px;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            color: #333333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ff007a;
+            box-shadow: 0 0 12px rgba(255, 0, 122, 0.5);
+            transform: scale(1.02);
+            outline: none;
+        }
+
+        .btn-selection, .btn-login {
+            background: linear-gradient(135deg, #ff69b4, #ff007a);
+            color: #fff;
+            border-radius: 35px;
+            padding: 14px 30px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: none;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .btn-selection:hover, .btn-login:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 30px rgba(255, 0, 122, 0.6);
+        }
+
+        .image-wrapper {
+            flex: 1.2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .image-wrapper:hover .login-image {
+            transform: scale(1.08);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.4), rgba(255, 0, 122, 0.1));
+            z-index: 1;
+            transition: background 0.3s ease;
+        }
+
+        .image-wrapper:hover .image-overlay {
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.5), rgba(255, 0, 122, 0.2));
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back-link a {
+            color: #ff007a;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #ff69b4;
+            transform: scale(1.05);
+        }
+
+        .login-card {
+            display: none;
+        }
+
+        .animate__zoomIn {
+            animation-duration: 1.2s;
+        }
+
+        .animate__fadeInUp {
+            animation-duration: 1.4s;
+        }
+
+        .animate__bounceIn {
+            animation-duration: 1.6s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .content-wrapper {
+                flex-direction: column;
+                height: auto;
+                max-width: 100%;
+                border-radius: 20px;
+            }
+
+            .card-wrapper {
+                padding: 30px;
+                min-height: auto;
+            }
+
+            .image-wrapper {
+                height: 300px;
+                width: 100%;
+            }
+
+            .selection-card, .login-card {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 70px 10px 20px;
+            }
+
+            .navbar-brand {
+                font-size: 1.6rem;
+            }
+
+            .navbar {
+                padding: 15px 0;
+            }
+
+            .navbar.scrolled {
+                padding: 10px 0;
+            }
+
+            .content-wrapper {
+                border-radius: 15px;
+            }
+
+            .card-wrapper {
+                padding: 20px;
+            }
+
+            .selection-card, .login-card {
+                padding: 25px;
+            }
+
+            .selection-card h3, .login-card h3 {
+                font-size: 1.8rem;
+                margin-bottom: 25px;
+            }
+
+            .form-control {
+                padding: 12px 15px;
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+
+            .btn-selection, .btn-login {
+                padding: 12px 25px;
+                font-size: 1.1rem;
+            }
+
+            .back-link a {
+                font-size: 1rem;
+            }
+
+            .image-wrapper {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+
+            .login-container {
+                padding: 60px 5px 15px;
+            }
+
+            .content-wrapper {
+                border-radius: 10px;
+            }
+
+            .card-wrapper {
+                padding: 15px;
+            }
+
+            .selection-card, .login-card {
+                padding: 20px;
+            }
+
+            .selection-card h3, .login-card h3 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .form-control {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .btn-selection, .btn-login {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+
+            .back-link a {
+                font-size: 0.9rem;
+            }
+
+            .image-wrapper {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand animate__animated animate__bounceIn" href="index.html">PinkScan</a>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="content-wrapper">
+            <!-- Card Wrapper -->
+            <div class="card-wrapper">
+                <!-- Selection Card -->
+                <div class="selection-card animate__animated animate__zoomIn" id="selectionCard">
+                    <h3>Welcome to PinkScan</h3>
+                    <button class="btn btn-selection mb-3" onclick="showPatientCard()">I am a Patient</button>
+                    <button class="btn btn-selection" onclick="showDoctorCard()">I am a Doctor</button>
+                    <div class="back-link">
+                        <a href="index.html">Back to Home</a>
+                    </div>
+                </div>
+
+                <!-- Patient Login Card -->
+                <div class="login-card animate__animated animate__fadeInUp" id="patientCard">
+                    <h3>Patient Login</h3>
+                    <form id="patientLoginForm">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="patientName" placeholder="Patient Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" class="form-control" id="patientAge" placeholder="Age" required>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-control" id="patientGender" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-login animate__animated animate__bounceIn">Login</button>
+                    </form>
+                    <div class="back-link">
+                        <a href="#" onclick="showSelectionCard()">Back to Selection</a>
+                    </div>
+                </div>
+
+                <!-- Doctor Login Card -->
+                <div class="login-card animate__animated animate__fadeInUp" id="doctorCard">
+                    <h3>Doctor Login</h3>
+                    <form id="doctorLoginForm">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="doctorName" placeholder="Doctor Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="doctorId" placeholder="Doctor ID" required>
+                        </div>
+                        <button type="submit" class="btn btn-login animate__animated animate__bounceIn">Login</button>
+                    </form>
+                    <div class="back-link">
+                        <a href="#" onclick="showSelectionCard()">Back to Selection</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Wrapper -->
+            <div class="image-wrapper">
+                <div class="image-overlay"></div>
+                <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&h=900&q=80" alt="Welcome Image" class="login-image" id="loginImage">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        const selectionCard = document.getElementById('selectionCard');
+        const patientCard = document.getElementById('patientCard');
+        const doctorCard = document.getElementById('doctorCard');
+        const loginImage = document.getElementById('loginImage');
+        const navbar = document.querySelector('.navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        function showPatientCard() {
+            selectionCard.style.display = 'none';
+            patientCard.style.display = 'block';
+            doctorCard.style.display = 'none';
+            loginImage.src = 'https://plus.unsplash.com/premium_photo-1681995498495-5258d436e705?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+            loginImage.style.opacity = '0';
+            setTimeout(() => loginImage.style.opacity = '1', 100);
+        }
+
+        function showDoctorCard() {
+            selectionCard.style.display = 'none';
+            patientCard.style.display = 'none';
+            doctorCard.style.display = 'block';
+            loginImage.src = 'https://media.istockphoto.com/id/1325164556/photo/portrait-of-mature-doctor-standing-isolated-over-gray-background-stock-photo.webp?a=1&b=1&s=612x612&w=0&k=20&c=sXqbpVP-3eVwVxipvL2lKQ3Sv-StN6M3ZrjU3qi4JbE=';
+            loginImage.style.opacity = '0';
+            setTimeout(() => loginImage.style.opacity = '1', 100);
+        }
+
+        function showSelectionCard() {
+            selectionCard.style.display = 'block';
+            patientCard.style.display = 'none';
+            doctorCard.style.display = 'none';
+            loginImage.src = 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&h=900&q=80';
+            loginImage.style.opacity = '0';
+            setTimeout(() => loginImage.style.opacity = '1', 100);
+        }
+
+        // Check URL parameters to show the appropriate card on page load
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+
+            if (type === 'patient') {
+                showPatientCard();
+            } else if (type === 'doctor') {
+                showDoctorCard();
+            } else {
+                showSelectionCard(); // Default to selection card if no type is specified
+            }
+        };
+
+        document.getElementById('patientLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('patientName').value;
+            const age = document.getElementById('patientAge').value;
+            const gender = document.getElementById('patientGender').value;
+
+            if (name && age && gender) {
+                window.location.href = 'http://localhost:8508';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+
+        document.getElementById('doctorLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('doctorName').value;
+            const id = document.getElementById('doctorId').value;
+
+            if (name && id) {
+                window.location.href = 'http://localhost:8513';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    </script>
+</body>
+</html>

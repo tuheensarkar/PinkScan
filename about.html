@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PinkScan - About Us</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/style.css">
+    <!-- Google Fonts for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff, #fce4ec); /* Subtle white to soft pink */
+            color: #333333;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(255, 105, 180, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            backdrop-filter: blur(5px);
+            transition: background 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: #fff;
+        }
+
+        .navbar-brand {
+            font-size: 2rem;
+            color: #ff69b4 !important;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(255, 105, 180, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            color: #333333 !important;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ff69b4 !important;
+            transform: scale(1.05);
+        }
+
+        .dropdown-menu {
+            background: #fff;
+            border: 1px solid #ffb6c1;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            color: #333333;
+            font-weight: 600;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #ff69b4;
+            color: #fff;
+        }
+
+        /* Content Section */
+        .content {
+            padding: 100px 20px 60px;
+            margin-top: 56px;
+            background: #fff;
+            position: relative;
+        }
+
+        .content h1 {
+            font-size: 3.5rem;
+            color: #ff69b4;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .content .lead {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        .content h3 {
+            font-size: 2rem;
+            color: #ff69b4;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+
+        .content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content ul li {
+            font-size: 1.1rem;
+            color: #333333;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .content ul li::before {
+            content: '\f00c'; /* Font Awesome checkmark */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #ff69b4;
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+
+        /* Developer Section */
+        .developer-section {
+            background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .developer-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), rgba(255, 105, 180, 0.1));
+            z-index: 1;
+            animation: pulseBackground 10s infinite ease-in-out;
+        }
+
+        .developer-section > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .developer-section h2 {
+            font-size: 3rem;
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 0 2px 15px rgba(255, 105, 180, 0.4);
+            margin-bottom: 50px;
+        }
+
+        .developer-card {
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: 2px solid #ffd1dc;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .developer-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);
+        }
+
+        .developer-name {
+            font-size: 1.8rem;
+            color: #ff69b4;
+            font-weight: 600;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .developer-name:hover {
+            color: #ff4d9e;
+        }
+
+        .developer-text {
+            font-size: 1.1rem;
+            color: #555555;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: linear-gradient(135deg, #f5f5f5, #fce4ec);
+            padding: 80px 0;
+        }
+
+        .testimonials h2 {
+            font-size: 3rem;
+            color: #ff69b4;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(255, 105, 180, 0.2);
+            margin-bottom: 50px;
+        }
+
+        .testimonials .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            padding: 25px;
+            transition: transform 0.4s ease;
+        }
+
+        .testimonials .card:hover {
+            transform: scale(1.05);
+        }
+
+        .testimonials .card-text {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        .testimonials h6 {
+            font-size: 1.1rem;
+            color: #ff69b4;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #fff, #fce4ec);
+            padding: 1px 0;
+            border-top: 3px solid #ff69b4;
+        }
+
+        .footer p {
+            font-size: 1.1rem;
+            color: #ff69b4;
+            font-weight: 600;
+        }
+
+        .footer a {
+            color: #ff69b4;
+            font-size: 1.5rem;
+            margin: 0 15px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #ff4d9e;
+            transform: scale(1.3);
+        }
+
+        /* Animations */
+        @keyframes pulseBackground {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.1; }
+        }
+
+        .animate__fadeIn, .animate__slideInLeft, .animate__slideInRight, .animate__tada, .animate__fadeInDown {
+            animation-duration: 1.8s;
+        }
+
+        .animate__fadeIn {
+            animation-delay: 0.2s;
+        }
+
+        .animate__slideInLeft {
+            animation-delay: 0.4s;
+        }
+
+        .animate__slideInRight {
+            animation-delay: 0.6s;
+        }
+
+        .animate__tada {
+            animation-delay: 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        .animate__fadeInDown {
+            animation-delay: 0.8s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content, .developer-section, .testimonials {
+                padding: 60px 0;
+            }
+
+            .content h1 {
+                font-size: 2.5rem;
+            }
+
+            .content .lead {
+                font-size: 1.2rem;
+            }
+
+            .content h3 {
+                font-size: 1.8rem;
+            }
+
+            .developer-section h2, .testimonials h2 {
+                font-size: 2.2rem;
+            }
+
+            .developer-card {
+                margin-bottom: 20px;
+            }
+
+            .developer-name {
+                font-size: 1.5rem;
+            }
+
+            .developer-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand animate__animated animate__bounceIn" href="index.html">PinkScan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link animate__animated animate__fadeInLeft" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link animate__animated animate__fadeInLeft" href="about.html" style="animation-delay: 0.2s;">About Us</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle animate__animated animate__fadeInLeft" href="#" id="predictionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="animation-delay: 0.4s;">
+                            Prediction Tool
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="predictionDropdown">
+                            <li><a class="dropdown-item" href="http://localhost:8501" target="_blank">Patient Self-Test</a></li>
+                            <li><a class="dropdown-item" href="https://pinkscan-doctor-test.streamlit.app/" target="_blank">Doctor’s Test</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link animate__animated animate__fadeInLeft" href="contact.html" style="animation-delay: 0.6s;">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link animate__animated animate__fadeInLeft" href="learn_more.html" style="animation-delay: 0.8s;">Learn More</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About PinkScan Section -->
+    <div class="content container my-5 pt-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="text-center animate__animated animate__fadeInDown">About PinkScan</h1>
+                <p class="lead text-center">PinkScan is a pioneering AI-powered platform designed to transform breast cancer detection and prevention. Leveraging advanced machine learning and a commitment to accessibility, we empower individuals and healthcare professionals worldwide with tools for early intervention, precise diagnostics, and personalized health strategies.</p>
+                <h3 class="animate__animated animate__fadeInUp">Our Mission</h3>
+                <p>At PinkScan, our mission is to harness technology to save lives by making breast cancer detection faster, more accurate, and universally accessible. We strive to reduce the global burden of breast cancer through innovation, education, and collaboration. Our core objectives include:</p>
+                <ul>
+                    <li>Enabling early detection to improve survival rates and treatment outcomes.</li>
+                    <li>Delivering affordable, scalable solutions for underserved communities.</li>
+                    <li>Raising awareness about breast health and preventive care.</li>
+                    <li>Partnering with medical experts to integrate cutting-edge research into practical tools.</li>
+                    <li>Ensuring privacy and security with state-of-the-art data protection.</li>
+                </ul>
+                <h3 class="animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">Our Vision</h3>
+                <p>We envision a future where breast cancer is no longer a silent threat, but a manageable condition detected early and treated effectively. By bridging the gap between advanced technology and everyday users, PinkScan aims to create a global community empowered with knowledge and resources to thrive.</p>
+                <h3 class="animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">Our Technology</h3>
+                <p>PinkScan is built on a robust Random Forest Classifier, trained on the renowned Breast Cancer Wisconsin (Diagnostic) Dataset, analyzing 30 critical features—such as clump thickness, cell size uniformity, and mitotic activity—to predict tumor malignancy with high precision. Key features of our platform include:</p>
+                <ul>
+                    <li>Real-time predictive analytics with over 95% accuracy.</li>
+                    <li>Interactive, multilingual dashboards for seamless user experience.</li>
+                    <li>Comprehensive PDF reports with dietary and lifestyle recommendations.</li>
+                    <li>Secure cloud-based infrastructure with end-to-end encryption.</li>
+                    <li>Ongoing enhancements driven by the latest advancements in AI and oncology.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Our Developers Section -->
+    <div class="developer-section py-5">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeInDown">Meet Our Visionary Team</h2>
+            <p class="text-center text-white mb-5 animate__animated animate__fadeInUp" style="font-size: 1.3rem; font-weight: 300;">Behind PinkScan is a dedicated team of innovators committed to revolutionizing health technology.</p>
+            <div class="row g-4 justify-content-center">
+                <!-- Upper Row (3 Developers) -->
+                <div class="col-md-4 col-lg-3 animate__animated animate__slideInLeft">
+                    <div class="developer-card">
+                        <div class="developer-name">Tuheen Sarkar</div>
+                        <p class="developer-text">Python Developer with a passion for AI-driven healthcare solutions, Tuheen leads our predictive modeling efforts, ensuring accuracy and reliability.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3 animate__animated animate__slideInLeft" style="animation-delay: 0.5s;">
+                    <div class="developer-card">
+                        <div class="developer-name">Suraj Ray</div>
+                        <p class="developer-text">A Software Engineer specializing in intuitive interfaces, Suraj crafts user experiences that make PinkScan accessible to all.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3 animate__animated animate__slideInRight" style="animation-delay: 1.0s;">
+                    <div class="developer-card">
+                        <div class="developer-name">Debjit Mazumder</div>
+                        <p class="developer-text">Python Developer focused on health analytics, Debjit optimizes our algorithms to deliver life-changing insights.</p>
+                    </div>
+                </div>
+                <!-- Lower Row (2 Developers) -->
+                <div class="col-md-6 col-lg-3 animate__animated animate__slideInLeft" style="animation-delay: 1.5s;">
+                    <div class="developer-card">
+                        <div class="developer-name">Arpayan Basu</div>
+                        <p class="developer-text">Frontend Developer enhancing PinkScan’s visual elegance, Arpayan ensures every pixel reflects our mission.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 animate__animated animate__slideInRight" style="animation-delay: 2.0s;">
+                    <div class="developer-card">
+                        <div class="developer-name">Vikrant Singh</div>
+                        <p class="developer-text">Frontend Developer focused on performance, Vikrant builds robust systems that keep PinkScan running smoothly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials py-5">
+        <div class="container">
+            <h2 class="text-center animate__animated animate__fadeInDown">Voices of Our Community</h2>
+            <p class="text-center mb-5 animate__animated animate__fadeInUp" style="font-size: 1.3rem; font-weight: 300; color: #555555;">Hear from those who trust PinkScan to guide their health journey.</p>
+            <div class="row g-4">
+                <div class="col-md-4 animate__animated animate__tada">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <p class="card-text">"PinkScan’s accurate predictions and detailed reports gave me the confidence to take control of my health. It’s a game-changer!"</p>
+                            <h6 class="mt-3">— Ayushi Kundu</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__tada" style="animation-delay: 0.5s;">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <p class="card-text">"The ease of use and fast results make PinkScan an essential tool for anyone serious about early detection."</p>
+                            <h6 class="mt-3">— Sneha Basu</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate__animated animate__tada" style="animation-delay: 1.0s;">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <p class="card-text">"I’m amazed by the personalized insights and multilingual support—PinkScan truly cares about its users."</p>
+                            <h6 class="mt-3">— Payel Agarwal</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer text-center py-4">
+        <div class="container">
+            <p class="mb-2 animate__animated animate__fadeInUp">© 2025 PinkScan. All rights reserved.</p>
+            <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+                <a href="https://www.facebook.com/pinkscan" target="_blank"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="https://www.twitter.com/pinkscan" target="_blank"><i class="fab fa-x-twitter fa-lg"></i></a>
+                <a href="https://www.instagram.com/pinkscan" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://www.linkedin.com/company/pinkscan" target="_blank"><i class="fab fa-linkedin fa-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
