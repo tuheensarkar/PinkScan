@@ -368,7 +368,7 @@ def main():
         translate("Mean Features"): feature_names[:10],
         translate("Standard Error Features"): feature_names[10:20],
         translate("Worst Features"): feature_names[20:30],
-        translate("Additional Features"): feature_names[30:]  # Add group for additional features
+        translate("Clinical Features"): feature_names[30:]  # Add group for additional features
     }
 
     input_features = []
