@@ -11,6 +11,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+import re
+import time
 
 # Set page config as the first Streamlit command
 st.set_page_config(page_title="PinkScan - Predict Tool", page_icon=":hospital:", layout="wide")
@@ -18,7 +20,11 @@ st.set_page_config(page_title="PinkScan - Predict Tool", page_icon=":hospital:",
 # Cache model loading
 @st.cache_resource
 def load_model():
-    return joblib.load('breast_cancer_model.pkl')
+    try:
+        return joblib.load('breast_cancer_model.pkl')
+    except FileNotFoundError:
+        st.error("Model file not found. Please ensure 'breast_cancer_model.pkl' is in the correct directory.")
+        st.stop()
 
 # Load model
 model = load_model()
@@ -82,6 +88,8 @@ LANGUAGES = {
 
 @st.cache_data
 def translate_text(text, lang):
+    if lang == 'en':
+        return text  # No translation needed for English
     translator = GoogleTranslator(source='auto', target=lang)
     try:
         return translator.translate(text)
@@ -184,28 +192,44 @@ def generate_pdf_report(patient_id, result, input_features, healthy_profile, ris
     # Add space before pie chart
     pdf.ln(10)
     
-    # Pie Chart Generation
+    # Pie Chart Generation with Dynamic Healthy Comparison
     pie_chart_path = f"pie_chart_{patient_id}.png"
     
     try:
+        # Calculate a simple "Healthy" score (e.g., similarity to healthy_profile)
+        healthy_similarity = 100 - np.mean(np.abs(np.array(input_features) - np.array(healthy_profile)) / 
+                                          (np.array([r[1] - r[0] for r in feature_ranges.values()]))) * 100
+        healthy_similarity = max(0, min(healthy_similarity, 20))  # Cap at 20% for visualization
+
         # Enhanced Pie Chart
-        labels = ["Malignant" if result == "Malignant" else "", "Benign" if result == "Benign" else "", "Healthy"]
-        sizes = [33.33 if result == "Malignant" else 0, 33.33 if result == "Benign" else 0, 33.33]  # Equal segments for clarity
-        colors = ["#FF6347", "#4682B4", "#32CD32"]  # Vibrant colors: Tomato, SteelBlue, LimeGreen
-        explode = (0.1 if result == "Malignant" else 0, 0.1 if result == "Benign" else 0, 0)  # Explode the predicted slice
-        fig, ax = plt.subplots(figsize=(5, 3))
-        wedges, texts, autotexts = ax.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', 
-                                          shadow=True, startangle=90, textprops={'fontsize': 8, 'color': 'black'})
+        labels = ["Malignant Risk", "Benign Probability", "Healthy Similarity"]
+        sizes = [risk_score, 100 - risk_score - healthy_similarity, healthy_similarity]
+        colors = ["#FF4040", "#40C4FF", "#D3D3D3"]  # Red (Malignant), Light Blue (Benign), Gray (Healthy)
+        explode = (0.1 if result == "Malignant" else 0, 0.1 if result == "Benign" else 0, 0)  # Explode predicted slice
+        
+        fig, ax = plt.subplots(figsize=(6, 4))  # Slightly larger for clarity
+        wedges, texts, autotexts = ax.pie(sizes, explode=explode, labels=None, colors=colors, autopct='%1.1f%%',
+                                          shadow=True, startangle=90, textprops={'fontsize': 10, 'color': 'black'})
         ax.axis("equal")
-        plt.setp(autotexts, size=8, weight="bold", color="white")  # White bold percentages
-        plt.title("Prediction Breakdown", fontsize=10)
+        
+        # Customize text
+        plt.setp(autotexts, size=10, weight="bold", color="white")
+        plt.setp(texts, size=10)
+        
+        # Add legend
+        ax.legend(wedges, labels, title="Categories", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1), fontsize=8)
+        
+        # Title
+        plt.title("Prediction Breakdown", fontsize=12, pad=20)
         plt.tight_layout()
-        fig.savefig(pie_chart_path, bbox_inches='tight', dpi=100)
+        
+        # Save with higher DPI for better PDF quality
+        fig.savefig(pie_chart_path, bbox_inches='tight', dpi=150)
         plt.close(fig)
 
         # Add pie chart to PDF
-        y_position = pdf.get_y()  # Get current Y position after dietary routine
-        pdf.image(pie_chart_path, x=left_margin, y=y_position, w=80)
+        y_position = pdf.get_y() + 10  # Add padding after dietary routine
+        pdf.image(pie_chart_path, x=left_margin, y=y_position, w=90)  # Slightly larger width
     except Exception as e:
         st.error(f"Error generating pie chart for PDF: {e}")
     finally:
@@ -256,11 +280,15 @@ def chatbot():
             st.sidebar.write("Prevention includes regular screenings, healthy diet, exercise, and avoiding smoking/alcohol.")
         elif "symptoms" in q_lower:
             st.sidebar.write("Symptoms include a lump, changes in breast size/shape, nipple discharge, or skin redness/pitting.")
+        elif "risk factors" in q_lower:
+            st.sidebar.write("Risk factors include age, family history, genetic mutations, obesity, and alcohol consumption.")
+        elif "diagnosis" in q_lower:
+            st.sidebar.write("Diagnosis typically involves mammograms, ultrasounds, biopsies, and MRI scans.")
         else:
             st.sidebar.write("I'm sorry, I don't have information on that. Please consult a healthcare professional.")
 
 # Feedback Collection
-def feedback_form():
+def feedback_form(patient_id):
     with st.form("feedback_form"):
         st.header("Feedback Form")
         feedback = st.text_area("Provide feedback or suggestions")
@@ -396,36 +424,52 @@ def main():
                 st.write(f"{translate('Risk Score')}: {risk_score:.2f}% {translate('likelihood of malignant tumor')}")
 
                 # Display Pie Chart in Streamlit App
-                st.subheader("Prediction Breakdown")
-                labels = ["Malignant" if result == "Malignant" else "", "Benign" if result == "Benign" else "", "Healthy"]
-                sizes = [33.33 if result == "Malignant" else 0, 33.33 if result == "Benign" else 0, 33.33]  # Equal segments for clarity
-                colors = ["#FF6347", "#4682B4", "#32CD32"]  # Vibrant colors: Tomato, SteelBlue, LimeGreen
-                explode = (0.1 if result == "Malignant" else 0, 0.1 if result == "Benign" else 0, 0)  # Explode the predicted slice
-                fig, ax = plt.subplots(figsize=(5, 3))
-                wedges, texts, autotexts = ax.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', 
-                                                shadow=True, startangle=90, textprops={'fontsize': 8, 'color': 'black'})
+                st.subheader(translate("Prediction Breakdown"))
+
+                # Calculate Healthy Similarity
+                healthy_similarity = 100 - np.mean(np.abs(np.array(input_features) - np.array(healthy_profile)) / 
+                                                  (np.array([r[1] - r[0] for r in feature_ranges.values()]))) * 100
+                healthy_similarity = max(0, min(healthy_similarity, 20))  # Cap at 20% for visualization
+
+                labels = ["Malignant Risk", "Benign Probability", "Healthy Similarity"]
+                sizes = [risk_score, 100 - risk_score - healthy_similarity, healthy_similarity]
+                colors = ["#FF4040", "#40C4FF", "#D3D3D3"]  # Red (Malignant), Light Blue (Benign), Gray (Healthy)
+                explode = (0.1 if result == "Malignant" else 0, 0.1 if result == "Benign" else 0, 0)  # Explode predicted slice
+
+                fig, ax = plt.subplots(figsize=(6, 4))
+                wedges, texts, autotexts = ax.pie(sizes, explode=explode, labels=None, colors=colors, autopct='%1.1f%%',
+                                                  shadow=True, startangle=90, textprops={'fontsize': 10, 'color': 'black'})
                 ax.axis("equal")
-                plt.setp(autotexts, size=8, weight="bold", color="white")  # White bold percentages
-                plt.title("Prediction Breakdown", fontsize=10)
+                plt.setp(autotexts, size=10, weight="bold", color="white")
+                plt.setp(texts, size=10)
+
+                # Add legend
+                ax.legend(wedges, labels, title="Categories", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1), fontsize=8)
+
+                plt.title("Prediction Breakdown", fontsize=12, pad=20)
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close(fig)
 
                 # Generate PDF Report
-                pdf_file = generate_pdf_report(patient_id, result, input_features, healthy_profile, risk_score)
-                with open(pdf_file, "rb") as file:
-                    st.download_button(
-                        label=translate("Download Report"),
-                        data=file,
-                        file_name=pdf_file,
-                        mime="application/pdf",
-                        key="download_button"
-                    )
+                with st.spinner("Generating PDF Report..."):
+                    pdf_file = generate_pdf_report(patient_id, result, input_features, healthy_profile, risk_score)
+                    with open(pdf_file, "rb") as file:
+                        st.download_button(
+                            label=translate("Download Report"),
+                            data=file,
+                            file_name=pdf_file,
+                            mime="application/pdf",
+                            key="download_button"
+                        )
 
                 # Email Functionality
                 email = st.text_input(translate("Enter your email for results (optional)"))
                 if st.button(translate("Send Results via Email")) and email:
-                    send_email(email, patient_id, result, risk_score, pdf_file)
+                    if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+                        send_email(email, patient_id, result, risk_score, pdf_file)
+                    else:
+                        st.error("Invalid email address. Please enter a valid email.")
 
             except Exception as e:
                 st.error(f"Prediction error: {e}")
@@ -434,7 +478,13 @@ def main():
     chatbot()
 
     # Feedback Form
-    feedback_form()
+    if patient_id:
+        feedback_form(patient_id)
+
+    # Reset Button
+    if st.button(translate("Reset Form")):
+        st.session_state.clear()
+        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
